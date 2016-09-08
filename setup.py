@@ -10,6 +10,7 @@ if sys.platform == 'darwin':
     }
 elif sys.platform == 'win32':
     templates = {
+        'script_path': os.path.dirname(os.path.realpath(__file__)),
         'maya_plugin_path': 'E:/RoyalRender/render_apps/_submitplugins',
         'rr_server_path': 'E:/RoyalRender'
     }
