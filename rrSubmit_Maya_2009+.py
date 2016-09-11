@@ -1343,24 +1343,24 @@ class rrPlugin(OpenMayaMPx.MPxCommand):
 
         for node in selection:
 
-            childrens = node.listRelatives(children=True)
-            if len(childrens) > 1:
+            children = node.listRelatives(children=True)
+            if len(children) > 1:
                 print (
                     "[-] %s group has multiple shapes attached to it. Skeeped!"
                     % node.name()
                 )
                 continue
-            elif len(childrens) == 0:
-                print "[-] %s  has no childrens" % node.name()
+            elif len(children) == 0:
+                print "[-] %s  has no children" % node.name()
                 child = node
             else:
-                child = childrens[0]
+                child = children[0]
 
             # Make sure that our child is a mesh node
             if child.type() != 'mesh':
                 print (
-                    "[-] %s object skiped since it does not contains a mesh object. "
-                    "Make sure that you made you selection in a viewport not in outliner."
+                    "[-] %s object skipped since it does not contains a mesh object. "
+                    "Make sure that you made your selection in the viewport and not in outliner."
                     % node.name()
                 )
                 continue
@@ -1388,11 +1388,12 @@ class rrPlugin(OpenMayaMPx.MPxCommand):
             if output_path[0] != "/" and output_path[1] != ":":
                 output_path = self.SceneInfo.DatabaseDir + output_path;
 
-            output_path = output_path + "/" + filename_prefix + "-"  + child.name() + "." + image_format
+            output_path = output_path + "/" + filename_prefix + "-"  + child.name() # + "." + image_format
 
             print '[D] Output path: ', output_path
 
             self.layer[self.maxLayer-1].imageFileName = output_path
+            self.layer[self.maxLayer-1].imageExtension = image_format
 
             self.layer[self.maxLayer-1].seqStep = 1
 
@@ -1402,7 +1403,7 @@ class rrPlugin(OpenMayaMPx.MPxCommand):
 
             # self.layer[self.maxLayer-1].ImageSingleOutputFile=True
 
-        # Make sure tha at least one
+        # Make sure that at least one
         # object was added for submission
         if self.maxLayer:
             return True
