@@ -1,18 +1,23 @@
 import os
 import sys
 import shutil
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('rr_server_path', help='path to royal render server root folder')
+args = parser.parse_args()
 
 if sys.platform == 'darwin':
     templates = {
         'script_path': os.path.dirname(os.path.realpath(__file__)),
         'maya_plugin_path': '/Applications/Autodesk/maya2015/Maya.app/Contents/MacOS/plug-ins',
-        'rr_server_path': '/Users/kif/Documents/rr/server'
+        'rr_server_path': args.rr_server_path
     }
 elif sys.platform == 'win32':
     templates = {
         'script_path': os.path.dirname(os.path.realpath(__file__)),
-        'maya_plugin_path': 'E:/RoyalRender/render_apps/_submitplugins',
-        'rr_server_path': 'E:/RoyalRender'
+        'maya_plugin_path': args.rr_server_path + '/render_apps/_submitplugins',
+        'rr_server_path': args.rr_server_path
     }
 
 files = [
