@@ -88,5 +88,5 @@ ENV/
 # Rope project settings
 .ropeproject
 
-# Maya renders
-tests/simple_cube/images/
+# Render images
+tests/simple_cube/images
