@@ -1,6 +1,6 @@
 //Maya ASCII 2015ff05 scene
 //Name: cube_and_plane_v001.ma
-//Last modified: Sun, Sep 11, 2016 12:27:51 PM
+//Last modified: Sun, Sep 11, 2016 12:50:11 PM
 //Codeset: UTF-8
 requires maya "2015ff05";
 requires -nodeType "mentalrayFramebuffer" -nodeType "mentalrayOptions" -nodeType "mentalrayGlobals"
@@ -305,7 +305,7 @@ createNode VRaySettingsNode -s -n "vraySettings";
 	setAttr ".gormio" yes;
 	setAttr ".jpegq" 100;
 	setAttr ".animtp" 1;
-	setAttr ".imgfs" -type "string" "jpg";
+	setAttr ".imgfs" -type "string" "png";
 	setAttr ".bkc" -type "string" "map1";
 	setAttr ".vfbOn" yes;
 	setAttr ".vfbSA" -type "Int32Array" 251 998 14 0 0 0 0
@@ -365,7 +365,9 @@ createNode VRayRenderElement -n "vrayRE_Specular";
 	setAttr ".vrayClassType" -type "string" "specularChannel";
 	setAttr ".vray_name_specular" -type "string" "specular";
 createNode VRayBakeOptions -s -n "vrayDefaultBakeOptions";
-	setAttr ".fnp" -type "string" "v001";
+	setAttr ".fnp" -type "string" "v002";
+	setAttr ".rsx" 128;
+	setAttr ".rsy" 128;
 select -ne :time1;
 	setAttr ".o" 1;
 	setAttr ".unw" 1;
@@ -401,6 +403,8 @@ select -ne :hardwareRenderingGlobals;
 		 0 0 0 0 ;
 select -ne :defaultHardwareRenderGlobals;
 	setAttr ".res" -type "string" "ntsc_4d 646 485 1.333";
+select -ne :ikSystem;
+	setAttr -s 4 ".sol";
 connectAttr "polyPlane1.out" "pPlaneShape1.i";
 connectAttr "polyCube1.out" "pCubeShape1.i";
 connectAttr ":mentalrayGlobals.msg" ":mentalrayItemsList.glb";

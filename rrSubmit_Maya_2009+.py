@@ -1323,15 +1323,23 @@ class rrPlugin(OpenMayaMPx.MPxCommand):
 
     def getBakeObj(self):
 
-        selection = pm.ls(sl = True)
+        selection = pm.ls(selection=True)
 
         # Check if user have something selected
         if (len(selection) == 0):
-            print("No object(s) selectetd")
+            cmds.warning("Select one or multiple objects to bake")
             return False
 
-        # TODO: Might not exist catch the exception
-        bake_options = pm.PyNode('vrayDefaultBakeOptions')
+        try:
+            bake_options = pm.PyNode('vrayDefaultBakeOptions')
+        # Might not exist catch the exception
+        except pm.MayaNodeError:
+            cmds.warning(
+                "vrayDefaultBakeOptions does not exist. "
+                "Please create one from the main menu "
+                "Lighting/Shading -> Show default V-Ray bake options"
+            )
+            return False
 
         # Get some global bake settings
         filename_prefix = bake_options.getAttr('filenamePrefix')
@@ -1346,7 +1354,7 @@ class rrPlugin(OpenMayaMPx.MPxCommand):
             children = node.listRelatives(children=True)
             if len(children) > 1:
                 print (
-                    "[-] %s group has multiple shapes attached to it. Skeeped!"
+                    "[-] %s group has multiple shapes attached to it. Skepped!"
                     % node.name()
                 )
                 continue
@@ -1388,18 +1396,18 @@ class rrPlugin(OpenMayaMPx.MPxCommand):
             if output_path[0] != "/" and output_path[1] != ":":
                 output_path = self.SceneInfo.DatabaseDir + output_path;
 
-            output_path = output_path + "/" + filename_prefix + "-"  + child.name() # + "." + image_format
-
-            print '[D] Output path: ', output_path
-
+            # Output file path and name but with no file extension
+            output_path = output_path + "/" + filename_prefix + "-"  + child.name()
+            # We split the file path and its extension in order to prevent RR
+            # trimming leading digits on the file name
             self.layer[self.maxLayer-1].imageFileName = output_path
-            self.layer[self.maxLayer-1].imageExtension = image_format
+            self.layer[self.maxLayer-1].imageExtension = "." + image_format
 
             self.layer[self.maxLayer-1].seqStep = 1
 
             # Set frame range from maya global settings
-            self.layer[self.maxLayer-1].seqStart=cmds.getAttr("defaultRenderGlobals.startFrame")
-            self.layer[self.maxLayer-1].seqEnd=cmds.getAttr("defaultRenderGlobals.endFrame")
+            self.layer[self.maxLayer-1].seqStart = cmds.getAttr("defaultRenderGlobals.startFrame")
+            self.layer[self.maxLayer-1].seqEnd = cmds.getAttr("defaultRenderGlobals.endFrame")
 
             # self.layer[self.maxLayer-1].ImageSingleOutputFile=True
 
@@ -1576,14 +1584,13 @@ class rrPlugin(OpenMayaMPx.MPxCommand):
         if (len(Layer.rendererVersionName)>0):
             self.subE(jobElement,"customRenVer_"+Layer.rendererVersionName,Layer.rendererVersion)
 
-        self.subE(jobElement, "CustomBakeTextures", 1)
-
     #write all information (layer/passes) into RR job file
     def writeAllLayers(self,UIMode):
         self.TempFileName=rrSetNewTempFileName(UIMode)
 
         submitOptions=""
 
+        # Debug to save file to a custom directory for feature examination
         # self.TempFileName = '/Users/kif/Documents/rr/dev/maya_txbkn/rrSubmitMaya_0071.xml'
         # print '[D] Temp file name: ', self.TempFileName
 
